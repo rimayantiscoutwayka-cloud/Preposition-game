@@ -1,2 +1,815 @@
 # Preposition-game
 Game preposition 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where is the Cat? 🐱 - Prepositions of Place</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Quicksand -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandYellow: '#FFDE59',
+                        brandBlue: '#7ED957',
+                        skyBlue: '#5CE1E6',
+                        softPink: '#FF66C4',
+                        pastelOrange: '#FF914D',
+                        pastelGreen: '#C1E1C1',
+                        bgSoft: '#FFF9E6'
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        quicksand: ['Quicksand', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FFF9E6;
+            touch-action: manipulation;
+        }
+        h1, h2, h3, .font-title {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .bounce-gentle {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .pulse-slow {
+            animation: pulse 3s infinite;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF9E6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF914D;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center p-2 sm:p-4 select-none">
+
+    <!-- Top Navigation Header -->
+    <header class="w-full max-w-5xl bg-white rounded-2xl shadow-md p-3 mb-3 flex justify-between items-center border-4 border-yellow-300">
+        <div class="flex items-center space-x-2 cursor-pointer" onclick="goToSlide(1)">
+            <span class="text-3xl">🐱</span>
+            <div>
+                <h1 class="text-lg sm:text-xl font-bold text-amber-600 leading-tight">Prepositions of Place</h1>
+                <p class="text-xs text-gray-500 font-bold">Class 3 SD • English Lesson</p>
+            </div>
+        </div>
+
+        <!-- Quick Navigation Bar -->
+        <div class="flex items-center space-x-1 sm:space-x-2">
+            <button onclick="goToSlide(3)" title="Main Menu" class="p-2 sm:px-3 sm:py-1.5 bg-yellow-400 hover:bg-yellow-500 text-amber-900 font-bold rounded-xl transition shadow flex items-center gap-1 text-sm">
+                <i class="fa-solid fa-house"></i>
+                <span class="hidden sm:inline">Menu</span>
+            </button>
+            <button id="soundToggleBtn" onclick="toggleSound()" class="p-2 sm:px-3 sm:py-1.5 bg-skyBlue hover:bg-cyan-400 text-sky-900 font-bold rounded-xl transition shadow flex items-center gap-1 text-sm">
+                <i id="soundIcon" class="fa-solid fa-volume-high"></i>
+                <span class="hidden sm:inline">Audio</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Deck Container -->
+    <main class="w-full max-w-5xl flex-grow bg-white rounded-3xl shadow-xl border-4 border-skyBlue overflow-hidden flex flex-col relative min-h-[500px]">
+
+        <!-- SLIDE 1: COVER -->
+        <div id="slide-1" class="slide-content w-full h-full p-6 flex flex-col justify-between items-center text-center bg-gradient-to-b from-yellow-100 via-amber-50 to-orange-100">
+            <div class="mt-4">
+                <span class="bg-amber-200 text-amber-800 text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
+                    ✨ Fun English Learning ✨
+                </span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold text-amber-600 mt-3 drop-shadow-sm">
+                    Where is the Cat? 🐱
+                </h1>
+                <p class="text-lg sm:text-2xl font-semibold text-gray-700 mt-2">
+                    Learning Prepositions of Place (Posisi Benda)
+                </p>
+            </div>
+
+            <!-- Animated Interactive Illustration -->
+            <div class="my-6 relative w-64 h-52 flex items-center justify-center">
+                <!-- SVG Cat and Box Scene -->
+                <svg viewBox="0 0 300 240" class="w-full h-full drop-shadow-md">
+                    <!-- Box -->
+                    <rect x="75" y="110" width="150" height="110" rx="10" fill="#FF914D" stroke="#D96B27" stroke-width="4"/>
+                    <rect x="65" y="100" width="170" height="20" rx="5" fill="#FFAA6C" stroke="#D96B27" stroke-width="3"/>
+                    <text x="150" y="170" font-family="Fredoka" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">MAGIC BOX</text>
+                    
+                    <!-- Cat (Peek Animation) -->
+                    <g id="coverCat" class="bounce-gentle">
+                        <!-- Ears -->
+                        <polygon points="110,65 125,35 140,60" fill="#FF66C4" />
+                        <polygon points="160,60 175,35 190,65" fill="#FF66C4" />
+                        <!-- Head -->
+                        <ellipse cx="150" cy="70" rx="42" ry="32" fill="#FFC72C"/>
+                        <!-- Eyes -->
+                        <circle cx="135" cy="65" r="5" fill="#333"/>
+                        <circle cx="165" cy="65" r="5" fill="#333"/>
+                        <circle cx="137" cy="63" r="2" fill="#FFF"/>
+                        <circle cx="167" cy="63" r="2" fill="#FFF"/>
+                        <!-- Nose & Mouth -->
+                        <polygon points="150,72 146,76 154,76" fill="#FF66C4"/>
+                        <path d="M144,80 Q150,85 156,80" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Whiskers -->
+                        <line x1="115" y1="70" x2="100" y2="68" stroke="#333" stroke-width="2"/>
+                        <line x1="115" y1="74" x2="102" y2="76" stroke="#333" stroke-width="2"/>
+                        <line x1="185" y1="70" x2="200" y2="68" stroke="#333" stroke-width="2"/>
+                        <line x1="185" y1="74" x2="198" y2="76" stroke="#333" stroke-width="2"/>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="mb-4 w-full max-w-md">
+                <button onclick="speakText('Where is the Cat? Let us learn prepositions of place!'); goToSlide(2);" 
+                        class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xl py-4 px-8 rounded-2xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-3 border-b-4 border-emerald-700">
+                    <span>START LESSON / MULAI</span>
+                    <i class="fa-solid fa-circle-play text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: OBJECTIVES -->
+        <div id="slide-2" class="slide-content hidden w-full h-full p-6 flex flex-col justify-between bg-sky-50">
+            <div>
+                <div class="flex items-center gap-3 border-b-4 border-sky-300 pb-3">
+                    <span class="text-4xl">🎯</span>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-sky-800">Learning Objectives</h2>
+                        <p class="text-sm text-sky-600 font-semibold">Tujuan Pembelajaran Hari Ini</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-2 border-sky-200 flex items-start gap-4">
+                        <div class="bg-yellow-300 text-amber-900 rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shrink-0">1</div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-lg">Mengenal Kata Posisi</h3>
+                            <p class="text-gray-600 text-sm mt-1">Siswa dapat memahami kata penunjuk posisi dalam Bahasa Inggris: <span class="font-bold text-amber-600">in, on, under, in front of, behind, next to</span>.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-2 border-sky-200 flex items-start gap-4">
+                        <div class="bg-sky-300 text-sky-900 rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shrink-0">2</div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-lg">Menunjukkan Posisi Benda</h3>
+                            <p class="text-gray-600 text-sm mt-1">Siswa dapat menyebutkan dan menunjukkan letak benda-benda di sekitar kelas atau rumah dengan tepat.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-2 border-sky-200 flex items-start gap-4">
+                        <div class="bg-emerald-300 text-emerald-900 rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shrink-0">3</div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-lg">Latihan & Kuis Interaktif</h3>
+                            <p class="text-gray-600 text-sm mt-1">Siswa dapat melatih pemahaman melalui game kuis interaktif yang seru dan menyenangkan.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-2 border-sky-200 flex items-start gap-4">
+                        <div class="bg-pink-300 text-pink-900 rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shrink-0">4</div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-lg">Percaya Diri Berbahasa Inggris</h3>
+                            <p class="text-gray-600 text-sm mt-1">Siswa makin aktif dan berani menjawab pertanyaan posisi benda dalam kalimat sederhana.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-100 p-4 rounded-xl border-2 border-amber-300 flex items-center justify-between">
+                <span class="text-amber-900 font-bold text-sm sm:text-base">Ready to start? Let's go to Main Menu!</span>
+                <button onclick="goToSlide(3)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl transition flex items-center gap-2">
+                    <span>Main Menu</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: MAIN MENU -->
+        <div id="slide-3" class="slide-content hidden w-full h-full p-6 flex flex-col justify-between bg-amber-50">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-amber-700">Main Menu / Menu Utama 🚀</h2>
+                <p class="text-gray-600 font-medium mt-1">Pilih materi atau petualangan yang ingin kamu pelajari!</p>
+            </div>
+
+            <!-- Grid Menu Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-auto max-w-3xl mx-auto w-full">
+                <!-- Button 1 -->
+                <button onclick="speakText('Preposition Words'); goToSlide(4);" class="p-5 bg-white hover:bg-yellow-100 rounded-2xl border-4 border-yellow-400 shadow-md transition transform hover:-translate-y-1 flex items-center space-x-4 text-left">
+                    <div class="w-14 h-14 bg-yellow-300 rounded-2xl flex items-center justify-center text-2xl font-bold text-amber-800 shrink-0">
+                        📦
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-amber-900">1. Prepositions Part 1</h3>
+                        <p class="text-xs text-gray-500 font-semibold">Pelajari: In, On, Under</p>
+                    </div>
+                </button>
+
+                <!-- Button 2 -->
+                <button onclick="speakText('Prepositions Part Two'); goToSlide(5);" class="p-5 bg-white hover:bg-sky-100 rounded-2xl border-4 border-sky-400 shadow-md transition transform hover:-translate-y-1 flex items-center space-x-4 text-left">
+                    <div class="w-14 h-14 bg-sky-300 rounded-2xl flex items-center justify-center text-2xl font-bold text-sky-800 shrink-0">
+                        🏠
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-sky-900">2. Prepositions Part 2</h3>
+                        <p class="text-xs text-gray-500 font-semibold">In front of, Behind, Next to</p>
+                    </div>
+                </button>
+
+                <!-- Button 3 -->
+                <button onclick="speakText('Mini Game and Quiz'); goToSlide(6);" class="p-5 bg-white hover:bg-emerald-100 rounded-2xl border-4 border-emerald-400 shadow-md transition transform hover:-translate-y-1 flex items-center space-x-4 text-left">
+                    <div class="w-14 h-14 bg-emerald-300 rounded-2xl flex items-center justify-center text-2xl font-bold text-emerald-800 shrink-0">
+                        🎮
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-emerald-900">3. Quiz & Mini Games</h3>
+                        <p class="text-xs text-gray-500 font-semibold">Kuis Pilihan Ganda & Match Game</p>
+                    </div>
+                </button>
+
+                <!-- Button 4 -->
+                <button onclick="speakText('Reflection and Summary'); goToSlide(8);" class="p-5 bg-white hover:bg-pink-100 rounded-2xl border-4 border-pink-400 shadow-md transition transform hover:-translate-y-1 flex items-center space-x-4 text-left">
+                    <div class="w-14 h-14 bg-pink-300 rounded-2xl flex items-center justify-center text-2xl font-bold text-pink-800 shrink-0">
+                        🌟
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-pink-900">4. Reflection & Summary</h3>
+                        <p class="text-xs text-gray-500 font-semibold">Rangkuman & Refleksi Belajar</p>
+                    </div>
+                </button>
+            </div>
+
+            <div class="text-center text-xs text-gray-500 font-semibold">
+                Klik salah satu tombol di atas untuk memulai! 👆
+            </div>
+        </div>
+
+        <!-- SLIDE 4: MATERIAL PART 1 (IN, ON, UNDER) -->
+        <div id="slide-4" class="slide-content hidden w-full h-full p-4 sm:p-6 flex flex-col justify-between bg-yellow-50">
+            <div class="flex justify-between items-center border-b-2 border-yellow-200 pb-2">
+                <div>
+                    <span class="text-xs font-bold bg-yellow-200 text-yellow-800 px-3 py-1 rounded-full">Part 1</span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-amber-800 inline-block ml-2">IN, ON, UNDER</h2>
+                </div>
+                <button onclick="speakText('In means di dalam, On means di atas, Under means di bawah')" class="bg-yellow-300 hover:bg-yellow-400 px-3 py-1 rounded-lg text-sm font-bold text-amber-900 flex items-center gap-1">
+                    <i class="fa-solid fa-volume-high"></i> Play Audio
+                </button>
+            </div>
+
+            <!-- Interactive Cards Comparison -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-auto">
+                <!-- IN -->
+                <div class="bg-white rounded-2xl p-4 border-4 border-yellow-300 shadow-md flex flex-col items-center text-center">
+                    <span class="text-2xl font-black text-amber-600 bg-yellow-100 px-4 py-1 rounded-full mb-2">IN</span>
+                    <p class="text-xs font-bold text-gray-500 mb-2">Artinya: <span class="text-amber-700">Di Dalam</span></p>
+
+                    <div class="w-40 h-32 bg-amber-50 rounded-xl flex items-center justify-center my-2 relative">
+                        <!-- SVG Cat IN Box -->
+                        <svg viewBox="0 0 160 120" class="w-full h-full">
+                            <rect x="30" y="50" width="100" height="60" fill="#FF914D" rx="6"/>
+                            <!-- Cat inside -->
+                            <ellipse cx="80" cy="45" rx="22" ry="18" fill="#FFC72C"/>
+                            <circle cx="72" cy="42" r="3" fill="#333"/>
+                            <circle cx="88" cy="42" r="3" fill="#333"/>
+                            <polygon points="80,48 77,52 83,52" fill="#FF66C4"/>
+                            <rect x="25" y="45" width="110" height="15" fill="#FFAA6C" rx="3"/>
+                        </svg>
+                    </div>
+
+                    <button onclick="speakText('The cat is in the box')" class="mt-2 text-xs sm:text-sm font-bold bg-amber-100 text-amber-900 px-3 py-2 rounded-xl border border-amber-300 w-full hover:bg-amber-200">
+                        🔊 "The cat is <span class="underline text-amber-700">in</span> the box."
+                    </button>
+                </div>
+
+                <!-- ON -->
+                <div class="bg-white rounded-2xl p-4 border-4 border-amber-300 shadow-md flex flex-col items-center text-center">
+                    <span class="text-2xl font-black text-amber-600 bg-amber-100 px-4 py-1 rounded-full mb-2">ON</span>
+                    <p class="text-xs font-bold text-gray-500 mb-2">Artinya: <span class="text-amber-700">Di Atas</span></p>
+
+                    <div class="w-40 h-32 bg-amber-50 rounded-xl flex items-center justify-center my-2">
+                        <!-- SVG Cat ON Box -->
+                        <svg viewBox="0 0 160 120" class="w-full h-full">
+                            <!-- Cat on top -->
+                            <ellipse cx="80" cy="35" rx="20" ry="16" fill="#FFC72C"/>
+                            <circle cx="73" cy="32" r="3" fill="#333"/>
+                            <circle cx="87" cy="32" r="3" fill="#333"/>
+                            <polygon points="80,38 77,41 83,41" fill="#FF66C4"/>
+                            <!-- Box below -->
+                            <rect x="30" y="55" width="100" height="55" fill="#FF914D" rx="6"/>
+                            <rect x="25" y="50" width="110" height="12" fill="#FFAA6C" rx="3"/>
+                        </svg>
+                    </div>
+
+                    <button onclick="speakText('The cat is on the box')" class="mt-2 text-xs sm:text-sm font-bold bg-amber-100 text-amber-900 px-3 py-2 rounded-xl border border-amber-300 w-full hover:bg-amber-200">
+                        🔊 "The cat is <span class="underline text-amber-700">on</span> the box."
+                    </button>
+                </div>
+
+                <!-- UNDER -->
+                <div class="bg-white rounded-2xl p-4 border-4 border-orange-300 shadow-md flex flex-col items-center text-center">
+                    <span class="text-2xl font-black text-orange-600 bg-orange-100 px-4 py-1 rounded-full mb-2">UNDER</span>
+                    <p class="text-xs font-bold text-gray-500 mb-2">Artinya: <span class="text-amber-700">Di Bawah</span></p>
+
+                    <div class="w-40 h-32 bg-amber-50 rounded-xl flex items-center justify-center my-2">
+                        <!-- SVG Cat UNDER Table -->
+                        <svg viewBox="0 0 160 120" class="w-full h-full">
+                            <!-- Table Top -->
+                            <rect x="15" y="30" width="130" height="12" fill="#8B4513" rx="2"/>
+                            <rect x="25" y="42" width="10" height="60" fill="#A0522D"/>
+                            <rect x="125" y="42" width="10" height="60" fill="#A0522D"/>
+                            <!-- Cat Under -->
+                            <ellipse cx="80" cy="75" rx="20" ry="16" fill="#FFC72C"/>
+                            <circle cx="73" cy="72" r="3" fill="#333"/>
+                            <circle cx="87" cy="72" r="3" fill="#333"/>
+                            <polygon points="80,78 77,81 83,81" fill="#FF66C4"/>
+                        </svg>
+                    </div>
+
+                    <button onclick="speakText('The cat is under the table')" class="mt-2 text-xs sm:text-sm font-bold bg-amber-100 text-amber-900 px-3 py-2 rounded-xl border border-amber-300 w-full hover:bg-amber-200">
+                        🔊 "The cat is <span class="underline text-amber-700">under</span> the table."
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="goToSlide(3)" class="bg-gray-200 hover:bg-gray-300 font-bold px-4 py-2 rounded-xl text-sm">
+                    ⬅ Menu
+                </button>
+                <button onclick="goToSlide(5)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl text-sm flex items-center gap-2">
+                    <span>Part 2: Next</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: MATERIAL PART 2 (IN FRONT OF, BEHIND, NEXT TO) -->
+        <div id="slide-5" class="slide-content hidden w-full h-full p-4 sm:p-6 flex flex-col justify-between bg-sky-50">
+            <div class="flex justify-between items-center border-b-2 border-sky-200 pb-2">
+                <div>
+                    <span class="text-xs font-bold bg-sky-200 text-sky-800 px-3 py-1 rounded-full">Part 2</span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-sky-900 inline-block ml-2">IN FRONT OF, BEHIND, NEXT TO</h2>
+                </div>
+                <button onclick="speakText('In front of means di depan, Behind means di belakang, Next to means di samping')" class="bg-sky-300 hover:bg-sky-400 px-3 py-1 rounded-lg text-sm font-bold text-sky-900 flex items-center gap-1">
+                    <i class="fa-solid fa-volume-high"></i> Play Audio
+                </button>
+            </div>
+
+            <!-- Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-auto">
+                <!-- IN FRONT OF -->
+                <div class="bg-white rounded-2xl p-4 border-4 border-sky-300 shadow-md flex flex-col items-center text-center">
+                    <span class="text-xl font-black text-sky-700 bg-sky-100 px-3 py-1 rounded-full mb-1">IN FRONT OF</span>
+                    <p class="text-xs font-bold text-gray-500 mb-2">Artinya: <span class="text-sky-800">Di Depan</span></p>
+
+                    <div class="w-40 h-32 bg-sky-50 rounded-xl flex items-center justify-center my-2 relative">
+                        <svg viewBox="0 0 160 120" class="w-full h-full">
+                            <!-- Chair behind -->
+                            <rect x="50" y="20" width="60" height="40" fill="#4B5563" rx="4"/>
+                            <rect x="45" y="60" width="70" height="10" fill="#374151" rx="2"/>
+                            <rect x="50" y="70" width="8" height="40" fill="#1F2937"/>
+                            <rect x="102" y="70" width="8" height="40" fill="#1F2937"/>
+                            <!-- Dog In Front -->
+                            <ellipse cx="80" cy="80" rx="22" ry="18" fill="#D97706"/>
+                            <circle cx="70" cy="75" r="3" fill="#333"/>
+                            <circle cx="90" cy="75" r="3" fill="#333"/>
+                            <circle cx="80" cy="82" r="4" fill="#333"/>
+                        </svg>
+                    </div>
+
+                    <button onclick="speakText('The dog is in front of the chair')" class="mt-2 text-xs sm:text-sm font-bold bg-sky-100 text-sky-900 px-3 py-2 rounded-xl border border-sky-300 w-full hover:bg-sky-200">
+                        🔊 "The dog is <span class="underline text-sky-700">in front of</span> the chair."
+                    </button>
+                </div>
+
+                <!-- BEHIND -->
+                <div class="bg-white rounded-2xl p-4 border-4 border-indigo-300 shadow-md flex flex-col items-center text-center">
+                    <span class="text-xl font-black text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full mb-1">BEHIND</span>
+                    <p class="text-xs font-bold text-gray-500 mb-2">Artinya: <span class="text-indigo-800">Di Belakang</span></p>
+
+                    <div class="w-40 h-32 bg-sky-50 rounded-xl flex items-center justify-center my-2">
+                        <svg viewBox="0 0 160 120" class="w-full h-full">
+                            <!-- Dog Peek Behind -->
+                            <ellipse cx="105" cy="50" rx="18" ry="16" fill="#D97706"/>
+                            <circle cx="100" cy="48" r="2.5" fill="#333"/>
+                            <circle cx="112" cy="48" r="2.5" fill="#333"/>
+                            <!-- Door/Wall in front -->
+                            <rect x="30" y="30" width="65" height="80" fill="#3B82F6" rx="4"/>
+                            <circle cx="85" cy="70" r="4" fill="#F59E0B"/>
+                        </svg>
+                    </div>
+
+                    <button onclick="speakText('The dog is behind the door')" class="mt-2 text-xs sm:text-sm font-bold bg-indigo-100 text-indigo-900 px-3 py-2 rounded-xl border border-indigo-300 w-full hover:bg-indigo-200">
+                        🔊 "The dog is <span class="underline text-indigo-700">behind</span> the door."
+                    </button>
+                </div>
+
+                <!-- NEXT TO -->
+                <div class="bg-white rounded-2xl p-4 border-4 border-teal-300 shadow-md flex flex-col items-center text-center">
+                    <span class="text-xl font-black text-teal-700 bg-teal-100 px-3 py-1 rounded-full mb-1">NEXT TO</span>
+                    <p class="text-xs font-bold text-gray-500 mb-2">Artinya: <span class="text-teal-800">Di Samping</span></p>
+
+                    <div class="w-40 h-32 bg-sky-50 rounded-xl flex items-center justify-center my-2">
+                        <svg viewBox="0 0 160 120" class="w-full h-full">
+                            <!-- Box -->
+                            <rect x="25" y="50" width="55" height="50" fill="#FF914D" rx="4"/>
+                            <!-- Dog Next to Box -->
+                            <ellipse cx="115" cy="75" rx="20" ry="16" fill="#D97706"/>
+                            <circle cx="107" cy="72" r="3" fill="#333"/>
+                            <circle cx="123" cy="72" r="3" fill="#333"/>
+                            <circle cx="115" cy="78" r="3" fill="#333"/>
+                        </svg>
+                    </div>
+
+                    <button onclick="speakText('The dog is next to the box')" class="mt-2 text-xs sm:text-sm font-bold bg-teal-100 text-teal-900 px-3 py-2 rounded-xl border border-teal-300 w-full hover:bg-teal-200">
+                        🔊 "The dog is <span class="underline text-teal-700">next to</span> the box."
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="goToSlide(4)" class="bg-gray-200 hover:bg-gray-300 font-bold px-4 py-2 rounded-xl text-sm">
+                    ⬅ Part 1
+                </button>
+                <button onclick="goToSlide(6)" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-5 py-2 rounded-xl text-sm flex items-center gap-2">
+                    <span>Go to Quiz 🎮</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: INTERACTIVE QUIZ SLIDE 1 -->
+        <div id="slide-6" class="slide-content hidden w-full h-full p-4 sm:p-6 flex flex-col justify-between bg-emerald-50">
+            <div class="flex justify-between items-center border-b-2 border-emerald-200 pb-2">
+                <div>
+                    <span class="text-xs font-bold bg-emerald-200 text-emerald-800 px-3 py-1 rounded-full">Quiz 1 of 2</span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-emerald-900 inline-block ml-2">Multiple Choice Quiz 🐶</h2>
+                </div>
+                <div id="quizScoreBadge" class="bg-emerald-200 font-bold px-3 py-1 rounded-full text-emerald-900 text-sm">
+                    Score: <span id="currentScore">0</span>/100
+                </div>
+            </div>
+
+            <div class="my-auto max-w-2xl mx-auto w-full flex flex-col items-center">
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 text-center mb-3">
+                    Look at the picture! <br><span class="text-emerald-700">"Where is the dog?"</span>
+                </h3>
+
+                <!-- Question Visual Illustration (Dog Under Table) -->
+                <div class="w-64 h-40 bg-white rounded-2xl border-4 border-emerald-300 shadow-md flex items-center justify-center mb-4 p-2">
+                    <svg viewBox="0 0 200 140" class="w-full h-full">
+                        <!-- Table Top -->
+                        <rect x="20" y="35" width="160" height="14" fill="#8B4513" rx="3"/>
+                        <rect x="30" y="49" width="12" height="75" fill="#A0522D"/>
+                        <rect x="158" y="49" width="12" height="75" fill="#A0522D"/>
+                        <!-- Dog Under Table -->
+                        <g transform="translate(100, 95)">
+                            <ellipse cx="0" cy="0" rx="26" ry="20" fill="#D97706"/>
+                            <circle cx="-10" cy="-5" r="4" fill="#333"/>
+                            <circle cx="10" cy="-5" r="4" fill="#333"/>
+                            <circle cx="0" cy="2" r="5" fill="#333"/>
+                            <path d="M-18,-15 C-25,-5 -25,10 -18,15" stroke="#B45309" stroke-width="5" fill="none"/>
+                            <path d="M18,-15 C25,-5 25,10 18,15" stroke="#B45309" stroke-width="5" fill="none"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Answer Options -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                    <button onclick="checkAnswer(this, false)" class="quiz-btn p-4 bg-white hover:bg-emerald-100 border-2 border-emerald-300 rounded-xl font-bold text-emerald-900 text-lg shadow transition">
+                        A. In the table
+                    </button>
+                    <button onclick="checkAnswer(this, true)" class="quiz-btn p-4 bg-white hover:bg-emerald-100 border-2 border-emerald-300 rounded-xl font-bold text-emerald-900 text-lg shadow transition">
+                        B. Under the table
+                    </button>
+                    <button onclick="checkAnswer(this, false)" class="quiz-btn p-4 bg-white hover:bg-emerald-100 border-2 border-emerald-300 rounded-xl font-bold text-emerald-900 text-lg shadow transition">
+                        C. On the table
+                    </button>
+                </div>
+
+                <!-- Feedback Box -->
+                <div id="quizFeedback" class="mt-4 p-3 rounded-xl font-bold text-center w-full hidden"></div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="goToSlide(5)" class="bg-gray-200 hover:bg-gray-300 font-bold px-4 py-2 rounded-xl text-sm">
+                    ⬅ Back to Material
+                </button>
+                <button onclick="goToSlide(7)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-sm flex items-center gap-2">
+                    <span>Next Game 🎮</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: INTERACTIVE MATCH-UP GAME -->
+        <div id="slide-7" class="slide-content hidden w-full h-full p-4 sm:p-6 flex flex-col justify-between bg-purple-50">
+            <div class="flex justify-between items-center border-b-2 border-purple-200 pb-2">
+                <div>
+                    <span class="text-xs font-bold bg-purple-200 text-purple-800 px-3 py-1 rounded-full">Quiz 2 of 2</span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-purple-900 inline-block ml-2">Match-Up Game 🧩</h2>
+                </div>
+                <button onclick="resetMatchGame()" class="bg-purple-200 hover:bg-purple-300 text-purple-900 px-3 py-1 rounded-lg text-xs font-bold">
+                    🔄 Reset Game
+                </button>
+            </div>
+
+            <div class="my-auto max-w-3xl mx-auto w-full">
+                <p class="text-center font-bold text-gray-700 mb-3 text-sm sm:text-base">
+                    Klik gambar lalu klik kata preposisi yang paling tepat!
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Item 1 -->
+                    <div class="bg-white p-3 rounded-2xl border-2 border-purple-300 shadow flex flex-col items-center">
+                        <div class="w-28 h-24 bg-purple-50 rounded-xl flex items-center justify-center mb-2">
+                            <!-- Cat IN Box -->
+                            <span class="text-4xl">🐱📥</span>
+                        </div>
+                        <p class="text-xs font-bold text-gray-600 mb-2">Cat _____ the box</p>
+                        <select id="match-select-1" onchange="checkMatchGame()" class="w-full bg-purple-100 border border-purple-300 font-bold text-purple-900 p-2 rounded-xl text-sm text-center">
+                            <option value="">-- Choose --</option>
+                            <option value="in">IN</option>
+                            <option value="on">ON</option>
+                            <option value="under">UNDER</option>
+                        </select>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="bg-white p-3 rounded-2xl border-2 border-purple-300 shadow flex flex-col items-center">
+                        <div class="w-28 h-24 bg-purple-50 rounded-xl flex items-center justify-center mb-2">
+                            <!-- Apple ON Table -->
+                            <span class="text-4xl">🍎🔝</span>
+                        </div>
+                        <p class="text-xs font-bold text-gray-600 mb-2">Apple _____ the box</p>
+                        <select id="match-select-2" onchange="checkMatchGame()" class="w-full bg-purple-100 border border-purple-300 font-bold text-purple-900 p-2 rounded-xl text-sm text-center">
+                            <option value="">-- Choose --</option>
+                            <option value="in">IN</option>
+                            <option value="on">ON</option>
+                            <option value="under">UNDER</option>
+                        </select>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="bg-white p-3 rounded-2xl border-2 border-purple-300 shadow flex flex-col items-center">
+                        <div class="w-28 h-24 bg-purple-50 rounded-xl flex items-center justify-center mb-2">
+                            <!-- Dog NEXT TO Box -->
+                            <span class="text-4xl">🐶📦</span>
+                        </div>
+                        <p class="text-xs font-bold text-gray-600 mb-2">Dog _____ the box</p>
+                        <select id="match-select-3" onchange="checkMatchGame()" class="w-full bg-purple-100 border border-purple-300 font-bold text-purple-900 p-2 rounded-xl text-sm text-center">
+                            <option value="">-- Choose --</option>
+                            <option value="next to">NEXT TO</option>
+                            <option value="behind">BEHIND</option>
+                            <option value="in front of">IN FRONT OF</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="matchFeedback" class="mt-4 p-3 rounded-xl font-bold text-center w-full hidden"></div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="goToSlide(6)" class="bg-gray-200 hover:bg-gray-300 font-bold px-4 py-2 rounded-xl text-sm">
+                    ⬅ Quiz 1
+                </button>
+                <button onclick="goToSlide(8)" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-5 py-2 rounded-xl text-sm flex items-center gap-2">
+                    <span>Reflection & Summary</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: REFLECTION & SUMMARY -->
+        <div id="slide-8" class="slide-content hidden w-full h-full p-6 flex flex-col justify-between bg-gradient-to-b from-pink-50 to-rose-100">
+            <div class="text-center">
+                <span class="text-4xl">🎉🌟 Great Job! 🌟🎉</span>
+                <h2 class="text-3xl font-extrabold text-pink-700 mt-1">Reflection & Summary</h2>
+                <p class="text-gray-600 font-medium">Kamu telah menyelesaikan pembelajaran hari ini!</p>
+            </div>
+
+            <!-- Summary Box -->
+            <div class="bg-white p-4 rounded-2xl border-4 border-pink-300 shadow-sm max-w-2xl mx-auto w-full my-auto">
+                <h3 class="font-bold text-pink-800 text-lg border-b pb-1 mb-2 text-center">📌 Quick Summary (Rangkuman Singkat)</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs sm:text-sm font-semibold text-gray-700 text-center">
+                    <div class="bg-pink-50 p-2 rounded-lg border border-pink-200"><span class="font-bold text-pink-700">IN</span> = Di dalam</div>
+                    <div class="bg-pink-50 p-2 rounded-lg border border-pink-200"><span class="font-bold text-pink-700">ON</span> = Di atas</div>
+                    <div class="bg-pink-50 p-2 rounded-lg border border-pink-200"><span class="font-bold text-pink-700">UNDER</span> = Di bawah</div>
+                    <div class="bg-pink-50 p-2 rounded-lg border border-pink-200"><span class="font-bold text-pink-700">IN FRONT OF</span> = Di depan</div>
+                    <div class="bg-pink-50 p-2 rounded-lg border border-pink-200"><span class="font-bold text-pink-700">BEHIND</span> = Di belakang</div>
+                    <div class="bg-pink-50 p-2 rounded-lg border border-pink-200"><span class="font-bold text-pink-700">NEXT TO</span> = Di samping</div>
+                </div>
+            </div>
+
+            <!-- Interactive Student Self Reflection -->
+            <div class="bg-white/80 backdrop-blur p-4 rounded-2xl border-2 border-pink-300 max-w-md mx-auto w-full text-center">
+                <p class="font-bold text-gray-800 mb-2 text-sm">How do you feel today? (Bagaimana perasaanmu?)</p>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="selectEmoji(this, 'Sangat Senang! 😄')" class="text-3xl p-2 bg-white hover:bg-yellow-100 rounded-full border-2 border-yellow-300 transition transform hover:scale-110 shadow">😄</button>
+                    <button onclick="selectEmoji(this, 'Paham & Seru! 😊')" class="text-3xl p-2 bg-white hover:bg-green-100 rounded-full border-2 border-green-300 transition transform hover:scale-110 shadow">😊</button>
+                    <button onclick="selectEmoji(this, 'Perlu Belajar Lagi! 🤔')" class="text-3xl p-2 bg-white hover:bg-sky-100 rounded-full border-2 border-sky-300 transition transform hover:scale-110 shadow">🤔</button>
+                </div>
+                <div id="reflectionMsg" class="mt-2 text-xs font-bold text-pink-700"></div>
+            </div>
+
+            <!-- Footer Action -->
+            <div class="flex justify-center gap-4 pt-2">
+                <button onclick="goToSlide(1)" class="bg-pink-500 hover:bg-pink-600 text-white font-bold px-6 py-2.5 rounded-2xl shadow-md transition flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Ulangi dari Awal</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Slide Navigation Footer -->
+    <footer class="w-full max-w-5xl mt-3 flex justify-between items-center bg-white rounded-2xl p-3 shadow-md border-2 border-gray-200">
+        <button id="prevBtn" onclick="prevSlide()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold px-4 py-2 rounded-xl transition flex items-center gap-2 text-sm">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span>Back</span>
+        </button>
+
+        <div id="slideIndicator" class="text-xs sm:text-sm font-bold text-gray-600">
+            Slide <span id="currentSlideNum">1</span> of 8
+        </div>
+
+        <button id="nextBtn" onclick="nextSlide()" class="bg-yellow-400 hover:bg-yellow-500 text-amber-900 font-bold px-4 py-2 rounded-xl transition flex items-center gap-2 text-sm">
+            <span>Next</span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+        let score = 0;
+        let soundEnabled = true;
+
+        // Slide Navigation
+        function goToSlide(slideNum) {
+            if (slideNum < 1 || slideNum > totalSlides) return;
+
+            // Hide all slides
+            for (let i = 1; i <= totalSlides; i++) {
+                const slide = document.getElementById(`slide-${i}`);
+                if (slide) slide.classList.add('hidden');
+            }
+
+            // Show selected slide
+            const targetSlide = document.getElementById(`slide-${slideNum}`);
+            if (targetSlide) {
+                targetSlide.classList.remove('hidden');
+                currentSlide = slideNum;
+                document.getElementById('currentSlideNum').innerText = currentSlide;
+            }
+
+            // Update Back/Next buttons visibility
+            document.getElementById('prevBtn').disabled = (currentSlide === 1);
+            document.getElementById('prevBtn').style.opacity = (currentSlide === 1) ? '0.5' : '1';
+
+            if (currentSlide === totalSlides) {
+                triggerConfetti();
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        // Speech Synthesis Audio Function
+        function speakText(text) {
+            if (!soundEnabled) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop current speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.85; // Slightly slower speed for kids
+                utterance.pitch = 1.1; // Friendly higher pitch
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const soundIcon = document.getElementById('soundIcon');
+            if (soundEnabled) {
+                soundIcon.className = "fa-solid fa-volume-high";
+                speakText("Audio enabled");
+            } else {
+                soundIcon.className = "fa-solid fa-volume-xmark";
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        // Quiz 1 Logic
+        function checkAnswer(btn, isCorrect) {
+            const feedback = document.getElementById('quizFeedback');
+            const btns = document.querySelectorAll('.quiz-btn');
+            
+            btns.forEach(b => b.classList.remove('bg-emerald-300', 'bg-red-300'));
+
+            feedback.classList.remove('hidden', 'bg-emerald-200', 'text-emerald-900', 'bg-red-200', 'text-red-900');
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-300');
+                feedback.classList.add('bg-emerald-200', 'text-emerald-900');
+                feedback.innerText = "🎉 Excellent! The dog is under the table!";
+                score = 50;
+                document.getElementById('currentScore').innerText = score;
+                speakText("Excellent! The dog is under the table!");
+                triggerConfetti();
+            } else {
+                btn.classList.add('bg-red-300');
+                feedback.classList.add('bg-red-200', 'text-red-900');
+                feedback.innerText = "❌ Oops! Try again!";
+                speakText("Try again!");
+            }
+        }
+
+        // Quiz 2 Match Game Logic
+        function checkMatchGame() {
+            const v1 = document.getElementById('match-select-1').value;
+            const v2 = document.getElementById('match-select-2').value;
+            const v3 = document.getElementById('match-select-3').value;
+            const feedback = document.getElementById('matchFeedback');
+
+            if (v1 && v2 && v3) {
+                feedback.classList.remove('hidden');
+                if (v1 === 'in' && v2 === 'on' && v3 === 'next to') {
+                    feedback.className = "mt-4 p-3 rounded-xl font-bold text-center w-full bg-purple-200 text-purple-900";
+                    feedback.innerText = "🌟 Perfect! You matched all correctly!";
+                    score = 100;
+                    document.getElementById('currentScore').innerText = score;
+                    speakText("Perfect! You matched all correctly!");
+                    triggerConfetti();
+                } else {
+                    feedback.className = "mt-4 p-3 rounded-xl font-bold text-center w-full bg-red-200 text-red-900";
+                    feedback.innerText = "🤔 Some answers are incorrect. Check again!";
+                }
+            }
+        }
+
+        function resetMatchGame() {
+            document.getElementById('match-select-1').value = "";
+            document.getElementById('match-select-2').value = "";
+            document.getElementById('match-select-3').value = "";
+            const feedback = document.getElementById('matchFeedback');
+            feedback.classList.add('hidden');
+        }
+
+        // Emoji Reflection Logic
+        function selectEmoji(btn, text) {
+            document.getElementById('reflectionMsg').innerText = `Kamu memilih: ${text}`;
+            speakText("Thank you for learning with us today!");
+            triggerConfetti();
+        }
+
+        // Confetti Effect
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { y: 0.7 }
+                });
+            }
+        }
+
+        // Initialize slide on load
+        window.onload = function() {
+            goToSlide(1);
+        };
+    </script>
+</body>
+</html>
